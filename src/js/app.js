@@ -23,29 +23,52 @@ import "../style/index.css";
     }
  */
 function render(variables = {}) {
-  console.log("These are the current variables: ", variables); // print on the console
-  // here we ask the logical questions to make decisions on how to build the html
-  // if includeCover==false then we reset the cover code without the <img> tag to make the cover transparent.
-  let cover = `<div class="cover"><img src="${variables.background}" /></div>`;
-  if (variables.includeCover == false) cover = "<div class='cover'></div>";
+  console.log("These are the current variables: ", variables);
+  const isValidURL = url => {
+    try {
+      new URL(url);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
 
-  // reset the website body with the new html output
-  document.querySelector("#widget_content").innerHTML = `<div class="widget">
-            ${cover}
-          <img src="${variables.avatarURL}" class="photo" />
-          <h1>${variables.name || ""} ${variables.lastName || ""}</h1>
-          <h2>${variables.role || ""}</h2>
-          <h3>${variables.city || ""}, ${variables.country || ""}</h3>
-          <ul class=${variables.socialMediaPosition}>
+  const background = isValidURL(variables.background)
+    ? variables.background
+    : "";
+  const includeCover =
+    typeof variables.includeCover === "boolean" ? variables.includeCover : true;
+  const avatarURL = isValidURL(variables.avatarURL)
+    ? variables.avatarURL
+    : "https://via.placeholder.com/150";
+  const name = typeof variables.name === "string" ? variables.name : "";
+  const lastName =
+    typeof variables.lastName === "string" ? variables.lastName : "";
+  const role = typeof variables.role === "string" ? variables.role : "";
+  const city = typeof variables.city === "string" ? variables.city : "";
+  const country =
+    typeof variables.country === "string" ? variables.country : "";
+  const socialMediaPosition =
+    typeof variables.socialMediaPosition === "string"
+      ? variables.socialMediaPosition
+      : "position-left";
+  let cover = `<div class="cover"><img src="${background}" /></div>`;
+  if (!includeCover) cover = "<div class='cover'></div>";
+  document.querySelector("#widget_content").innerHTML = `
+        <div class="widget">
+          ${cover}
+          <img src="${avatarURL}" class="photo" />
+          <h1>${name} ${lastName}</h1>
+          <h2>${role}</h2>
+          <h3>${city}${city && country ? ", " : ""}${country}</h3>
+          <ul class="${socialMediaPosition}">
             <li><a href="https://twitter.com/4geeksacademy"><i class="fab fa-twitter"></i></a></li>
             <li><a href="https://github.com/4geeksacademy"><i class="fab fa-github"></i></a></li>
             <li><a href="https://linkedin.com/school/4geeksacademy"><i class="fab fa-linkedin"></i></a></li>
             <li><a href="https://instagram.com/4geeksacademy"><i class="fab fa-instagram"></i></a></li>
           </ul>
-        </div>
-    `;
+        </div>`;
 }
-
 /**
  * Don't change any of the lines below, here is where we do the logic for the dropdowns
  */
